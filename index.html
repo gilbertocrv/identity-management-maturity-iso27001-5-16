@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Deep Dive 5.16 - Identity Management Maturity</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#f4f6f8;
+    margin:20px;
+    color:#333;
+}
+
+.container {
+    max-width:1100px;
+    margin:auto;
+    background:#fff;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+header {
+    border-bottom:2px solid #0056b3;
+    padding-bottom:10px;
+    margin-bottom:20px;
+}
+
+h1 {
+    color:#003366;
+    margin:0;
+}
+
+.badge {
+    background:#e7f3ff;
+    color:#0056b3;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+h2 {
+    color:#0056b3;
+    margin-top:25px;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+th, td {
+    border:1px solid #ddd;
+    padding:10px;
+}
+
+th {
+    background:#0056b3;
+    color:#fff;
+}
+
+select {
+    width:100%;
+    padding:5px;
+}
+
+.score-box {
+    margin-top:25px;
+    padding:20px;
+    border:1px solid #0056b3;
+    background:#f8fbff;
+    border-radius:8px;
+}
+
+.result {
+    font-size:22px;
+    font-weight:bold;
+    color:#003366;
+}
+
+button {
+    margin-top:20px;
+    background:#0056b3;
+    color:#fff;
+    padding:10px 20px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover {
+    background:#003366;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+<span class="badge">SÉRIE MATURIDADE – POST #2</span>
+<h1>Controle 5.16 – Identity Management</h1>
+<p>Base normativa: ISO/IEC 27001:2022</p>
+</header>
+
+<div id="assessment"></div>
+
+<div class="score-box">
+<p><strong>Score Geral:</strong> <span id="overallScore" class="result">0.00</span></p>
+<p><strong>Classificação:</strong> <span id="classification" class="result">-</span></p>
+</div>
+
+<button onclick="calculate()">Calcular Maturidade</button>
+
+</div>
+
+<script>
+
+const sections = {
+"Onboarding": [
+"Existe identificador único para cada identidade?",
+"A criação exige aprovação formal?",
+"Está integrado ao RH?"
+],
+
+"Movimentação": [
+"Mudanças de cargo revisam acessos automaticamente?",
+"Existe trilha de auditoria das alterações?",
+"Contas não humanas são gerenciadas formalmente?"
+],
+
+"Offboarding": [
+"Existe SLA formal para desativação?",
+"Desligamento no RH remove acessos críticos automaticamente?",
+"Contas órfãs são revisadas periodicamente?"
+]
+};
+
+const container = document.getElementById("assessment");
+
+for (const title in sections) {
+    let html = `<h2>${title}</h2><table>
+    <tr>
+    <th style="width:70%">Critério</th>
+    <th>Nível (0–5)</th>
+    </tr>`;
+
+    sections[title].forEach(q => {
+        html += `
+        <tr>
+        <td>${q}</td>
+        <td>
+        <select class="score">
+            <option value="0">0 - Inexistente</option>
+            <option value="1">1 - Ad-hoc</option>
+            <option value="2">2 - Documentado</option>
+            <option value="3">3 - Padronizado</option>
+            <option value="4">4 - Automatizado</option>
+            <option value="5">5 - Baseado em Risco</option>
+        </select>
+        </td>
+        </tr>`;
+    });
+
+    html += "</table>";
+    container.innerHTML += html;
+}
+
+function calculate() {
+
+let scores = document.querySelectorAll(".score");
+let total = 0;
+
+scores.forEach(s => total += parseInt(s.value));
+
+let avg = total / scores.length;
+document.getElementById("overallScore").innerText = avg.toFixed(2);
+
+let classification = "";
+
+if (avg < 1) classification = "Inexistente";
+else if (avg < 2) classification = "Ad-hoc";
+else if (avg < 3) classification = "Documentado";
+else if (avg < 4) classification = "Padronizado";
+else if (avg < 4.5) classification = "Automatizado";
+else classification = "Baseado em Risco";
+
+document.getElementById("classification").innerText = classification;
+}
+
+</script>
+
+</body>
+</html>
